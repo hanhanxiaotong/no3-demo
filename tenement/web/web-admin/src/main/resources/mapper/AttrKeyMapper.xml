@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gec.webadmin.mapper.AttrKeyMapper">
+
+    <resultMap id="BaseResultMap" type="com.gec.model.vo.AttrKeyVo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <collection property="attrValueList" ofType="com.gec.model.entity.AttrValue">
+                <id property="id" column="value_id" jdbcType="BIGINT"/>
+                <result property="name" column="value_name" jdbcType="VARCHAR"/>
+                <result property="attrKeyId" column="key_id" jdbcType="BIGINT"/>
+            </collection>
+    </resultMap>
+
+    <select id="listattrinfo" resultMap="BaseResultMap">
+        select
+            k.*,
+            v.id          value_id,
+            v.name        value_name,
+            v.attr_key_id key_id
+        from attr_key k
+                 left join attr_value v
+                           on k.id=v.attr_key_id and v.is_deleted=0
+        where k.is_deleted=0
+    </select>
+
+    <sql id="Base_Column_List">
+        id,name,create_time,
+        update_time,is_deleted
+    </sql>
+</mapper>
